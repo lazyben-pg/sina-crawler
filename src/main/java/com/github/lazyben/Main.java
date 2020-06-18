@@ -26,31 +26,56 @@ public class Main {
             if (processedLinkPool.contains(link)) {
                 continue;
             }
-
-            if (!link.contains("passport") && link.contains("news.sina.cn") || link.equals("https://sina.cn")) {
+            if (isInterestedLink(link)) {
                 processedLinkPool.add(link);
                 System.out.println("link = " + link);
-                CloseableHttpClient httpclient = HttpClients.createDefault();
-                HttpGet httpGet = new HttpGet(link);
-                httpGet.setHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36");
-                try (CloseableHttpResponse response1 = httpclient.execute(httpGet)) {
-                    System.out.println(response1.getStatusLine());
-                    HttpEntity entity1 = response1.getEntity();
-                    Document doc = Jsoup.parse(EntityUtils.toString(entity1));
-
-                    Elements aTags = doc.select("a");
-                    for (Element aTag : aTags) {
-                        linkPool.add(aTag.attr("href"));
-                    }
-
-                    Elements articleTags = doc.select("article");
-                    if (!articleTags.isEmpty()) {
-                        for (Element article : articleTags) {
-                            System.out.println(article.child(0).text());
-                        }
-                    }
-                }
+                Document doc = httpGetAndParseHtml(link);
+//                Elements aTags = doc.select("a");
+//                for (Element aTag : aTags) {
+//                    linkPool.add(aTag.attr("href"));
+//                }
+                doc.select("a").stream().map(aTag -> aTag.attr("href")).forEach(linkPool::add);
+                storeIntoDatabaseIfItIsNewsPage(doc);
             }
         }
+    }
+
+    private static void storeIntoDatabaseIfItIsNewsPage(Document doc) {
+        Elements articleTags = doc.select("article");
+        if (!articleTags.isEmpty()) {
+            for (Element article : articleTags) {
+                System.out.println(article.child(0).text());
+            }
+        }
+    }
+
+    private static Document httpGetAndParseHtml(String link) throws IOException {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        if(link.startsWith("//")){
+            link = "https:" +link;
+        }
+        HttpGet httpGet = new HttpGet(link);
+        httpGet.setHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36");
+        try (CloseableHttpResponse response1 = httpclient.execute(httpGet)) {
+            HttpEntity entity1 = response1.getEntity();
+            return Jsoup.parse(EntityUtils.toString(entity1));
+        }
+    }
+
+    private static boolean isInterestedLink(String link) {
+        return (isNewsPage(link) || isIndexPage(link)) &&
+                isNotLoginPage(link);
+    }
+
+    private static boolean isNotLoginPage(String link) {
+        return !link.contains("passport.sina.cn");
+    }
+
+    private static boolean isNewsPage(String link) {
+        return link.contains("news.sina.cn");
+    }
+
+    private static boolean isIndexPage(String link) {
+        return "https://sina.cn".equals(link);
     }
 }
