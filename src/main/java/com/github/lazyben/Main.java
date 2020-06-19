@@ -14,6 +14,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.stream.Collectors;
 
 public class Main {
     @SuppressFBWarnings("DMI_CONSTANT_DB_PASSWORD")
@@ -30,7 +31,7 @@ public class Main {
                 System.out.println("link = " + link);
                 Document doc = httpGetAndParseHtml(link);
                 parseUrlAndInsertIntoDatabase(connection, doc);
-                storeIntoDatabaseIfItIsNewsPage(doc);
+                storeIntoDatabaseIfItIsNewsPage(connection, doc, link);
             }
         }
     }
@@ -80,11 +81,19 @@ public class Main {
         return null;
     }
 
-    private static void storeIntoDatabaseIfItIsNewsPage(Document doc) {
+    private static void storeIntoDatabaseIfItIsNewsPage(Connection connection, Document doc, String link) throws SQLException {
         Elements articleTags = doc.select("article");
         if (!articleTags.isEmpty()) {
             for (Element article : articleTags) {
-                System.out.println(article.child(0).text());
+                String title = article.child(0).text();
+                String content = article.select("p").stream().map(Element::text).collect(Collectors.joining("\n"));
+                System.out.println(title);
+                try (PreparedStatement preparedStatement = connection.prepareStatement("insert into news (title, content, url,created_at, modified_at) values(?,?,?,now(), now())")) {
+                    preparedStatement.setString(1, title);
+                    preparedStatement.setString(2, content);
+                    preparedStatement.setString(3, link);
+                    preparedStatement.executeUpdate();
+                }
             }
         }
     }
