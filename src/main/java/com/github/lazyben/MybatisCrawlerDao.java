@@ -33,7 +33,7 @@ public class MybatisCrawlerDao implements CrawlerDao {
     }
 
     @Override
-    public String getNextLinkAndDelete() throws SQLException {
+    public synchronized String getNextLinkAndDelete() throws SQLException {
         try (SqlSession session = sqlSessionFactory.openSession(true)) {
             String link = (String) session.selectOne("selectNextLink");
             if (link != null) {
