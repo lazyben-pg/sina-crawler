@@ -5,35 +5,35 @@
 <mapper namespace="org.mybatis.example.BlogMapper">
     <select id="selectNextLink" resultType="String">
         select link
-        from links_to_be_processed
+        from LINKS_TO_BE_PROCESSED
         limit 1
     </select>
 
     <delete id="deleteLink" parameterType="String">
         delete
-        from links_to_be_processed
+        from LINKS_TO_BE_PROCESSED
         where link = #{link}
     </delete>
 
     <insert id="insertNews" parameterType="com.github.lazyben.News">
-        insert into news (title, content, url,created_at, modified_at)
+        insert into NEWS (title, content, url,created_at, modified_at)
         values (#{title}, #{content}, #{url}, now(), now())
     </insert>
 
     <select id="countLink" parameterType="String" resultType="int">
         select count(*)
-        from links_already_processed
+        from LINKS_ALREADY_PROCESSED
         where link = #{link}
     </select>
 
     <insert id="insertLink" parameterType="HashMap">
         insert into
         <choose>
-            <when test="tableName == 'links_to_be_processed'">
-                links_to_be_processed
+            <when test="tableName == 'LINKS_TO_BE_PROCESSED'">
+                LINKS_TO_BE_PROCESSED
             </when>
             <otherwise>
-                links_already_processed
+                LINKS_ALREADY_PROCESSED
             </otherwise>
         </choose>
         (link)

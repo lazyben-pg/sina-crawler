@@ -10,7 +10,7 @@ public class JdbcCrawlerDao implements CrawlerDao {
     @SuppressFBWarnings("DMI_CONSTANT_DB_PASSWORD")
     public JdbcCrawlerDao() {
         try {
-            this.connection = DriverManager.getConnection("jdbc:h2:file:/Users/lazyben/Projects/sina-crawler/news", "root", "root");
+            this.connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/news?characterEncoding=utf-8", "root", "root");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

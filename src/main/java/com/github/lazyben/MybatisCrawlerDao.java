@@ -52,12 +52,12 @@ public class MybatisCrawlerDao implements CrawlerDao {
 
     @Override
     public void insertLinkIntoLinksPool(String link) throws SQLException {
-        chooseTableAndInsertLink(link, "links_to_be_processed");
+        chooseTableAndInsertLink(link, "LINKS_TO_BE_PROCESSED");
     }
 
     @Override
     public void insertLinkIntoProcessedPool(String link) throws SQLException {
-        chooseTableAndInsertLink(link, "links_already_processed");
+        chooseTableAndInsertLink(link, "LINKS_ALREADY_PROCESSED");
     }
 
     private void chooseTableAndInsertLink(String link, String tableName) {

@@ -21,6 +21,11 @@
     </repositories>
     <dependencies>
         <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.20</version>
+        </dependency>
+        <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
             <version>3.5.5</version>
@@ -30,12 +35,12 @@
             <artifactId>annotations</artifactId>
             <version>3.0.1</version>
         </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.199</version>
-            <scope>compile</scope>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>com.h2database</groupId>-->
+        <!--            <artifactId>h2</artifactId>-->
+        <!--            <version>1.4.199</version>-->
+        <!--            <scope>compile</scope>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -109,7 +114,7 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>6.0.4</version>
                 <configuration>
-                    <url>jdbc:h2:file:/Users/lazyben/Projects/sina-crawler/news</url>
+                    <url>jdbc:mysql://localhost:3306/news</url>
                     <user>root</user>
                     <password>root</password>
                 </configuration>
