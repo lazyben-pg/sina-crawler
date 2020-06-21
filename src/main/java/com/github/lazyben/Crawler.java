@@ -16,7 +16,7 @@ import java.sql.*;
 import java.util.stream.Collectors;
 
 public class Crawler {
-    JdbcCrawlerDao dao = new JdbcCrawlerDao();
+    CrawlerDao dao = new MybatisCrawlerDao();
 
     public static void main(String[] args) throws IOException, SQLException {
         new Crawler().run();

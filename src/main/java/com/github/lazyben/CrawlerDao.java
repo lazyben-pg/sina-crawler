@@ -5,8 +5,6 @@ import java.sql.SQLException;
 public interface CrawlerDao {
     boolean isAlreadyProcessed(String link) throws SQLException;
 
-    String getNextLink() throws SQLException;
-
     String getNextLinkAndDelete() throws SQLException;
 
     void insertNewsIntoDatabase(String link, String title, String content) throws SQLException;
